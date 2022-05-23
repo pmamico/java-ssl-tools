@@ -25,7 +25,7 @@ _arg_alias="<host>"
 
 print_help()
 {
-	printf '%s\n' "SSL certificate install into java keystore. (v0.1)"
+	printf '%s\n' "SSL certificate install into java keystore. (v1.0)"
 	printf 'Usage: %s [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] <host>\n' "$0"
 	printf '\t%s\n' "<host>: without https:// and port, eg. google.com"
 	printf '\t%s\n' "-p, --port: port (default: '443')"

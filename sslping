@@ -24,7 +24,7 @@ _arg_port="443"
 
 print_help()
 {
-	printf '%s\n' "SSL handshake check for java. (v0.1)"
+	printf '%s\n' "SSL handshake check for java. (v1.0)"
 	printf 'Usage: %s [-p|--port <arg>] [-h|--help] <host>\n' "$0"
 	printf '\t%s\n' "<host>: without https:// and port, eg. google.com"
 	printf '\t%s\n' "-p, --port: port (default: '443')"
