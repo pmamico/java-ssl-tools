@@ -6,7 +6,7 @@ Install certificates and check SSL handshake easily.
 
 Just run: 
 ```
-curl -sL https://raw.githubusercontent.com/pmamico/java-ssl/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
 ```
 for windows, use `Git Bash` or bash enabled powershell as system administrator.
 
