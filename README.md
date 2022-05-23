@@ -53,3 +53,8 @@ Windows 11 |  ✓
 
 * `JAVA_HOME` environment
 * `openssl` 
+
+
+## Credits
+
+Script skeleton generated with https://argbash.io/
