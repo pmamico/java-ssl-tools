@@ -118,8 +118,8 @@ if [[ "$_arg_alias" == "<host>" ]]; then
 fi
 echo "Installing cert for $(java --version)"
 echo "keytool: $JAVA_HOME/bin/keytool "
-$JAVA_HOME/bin/keytool -delete -noprompt -alias $_arg_alias -keypass changeit -storepass changeit 2>/dev/null
+"$JAVA_HOME/bin/keytool" -delete -noprompt -alias $_arg_alias -keypass changeit -storepass changeit 2>/dev/null
 echo | openssl s_client -connect "$_arg_host:$_arg_port"  2>/dev/null | openssl x509 > $_arg_alias.pem
-$JAVA_HOME/bin/keytool -importcert -cacerts -noprompt -alias $_arg_alias -file $_arg_alias.pem -keypass changeit -storepass changeit
+"$JAVA_HOME/bin/keytool" -importcert -cacerts -noprompt -alias $_arg_alias -file $_arg_alias.pem -keypass changeit -storepass changeit
 
 # ] <-- needed because of Argbash
