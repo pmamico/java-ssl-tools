@@ -1,6 +1,6 @@
 # java-ssl-tools
 
-Install certificate and check SSL handshake easily.
+Install certificate and check SSL handshake easily into java keystore.
 
 ## How to install
 
