@@ -1,3 +1,9 @@
+![Cert](.img/ssl.svg)  
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)  
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![Mac OS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)  
+
 # java-ssl-tools
 
 Install certificate into java keystore and check SSL handshake easily.
@@ -39,15 +45,6 @@ Usage: sslinstall [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] <host>
 	-a, --alias: alias in keystore (default: <host>
 	-h, --help: Prints help
 ```
-## Compatibility
-|        |    | 
- -- | --
- JDK 11 | ✓
- JDK 17 |  ✓ |
- macOs |  ✓
- Ubuntu |  ✓
-Windows 10 |  ✓
-Windows 11 |  ✓
 
 ## Requirements
 
