@@ -54,6 +54,12 @@ Windows 11 |  ✓
 * `JAVA_HOME` environment
 * `openssl` 
 
+## How to remove
+```
+curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/uninstall.sh | bash
+```
+for windows, use `Git Bash` or bash enabled powershell as system administrator.
+
 
 ## Credits
 
