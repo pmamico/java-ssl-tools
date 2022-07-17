@@ -4,9 +4,20 @@
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![Mac OS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)  
 
-# java-ssl-tools
+# java-ssl-tools (jssl)
 
-Install certificate into java keystore and check SSL handshake easily.
+Install certificate into java keystore and check SSL handshake easily, like
+
+```
+$ jssl example.com install
+Certificate was added to keystore
+```
+```
+$ jssl example.com ping
+Successfully connected to Socket[addr=example.com/93.184.216.34,port=443,localport=64233]
+```
+
+No more PKIX error! :)
 
 ## How to install
 
@@ -16,48 +27,24 @@ curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.s
 ```
 for windows, use `Git Bash` or bash enabled powershell as system administrator.
 
-## Quick start
 
-```
-# failed to connect, PKIX error
-sslping example.com 
-
-# install
-sslinstall example.com 
-
-#successful SSL handshake
-sslping example.com 
-```
     
 ## Manual
 ```
-SSL handshake check for java. (v1.0)
-Usage: sslping [-p|--port <arg>] [-h|--help] <host>
+jssl v1.1
+Install trusted certificate and check SSL handshake against java keystore.
+Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]
 	<host>: without https:// and port, eg. google.com
+	<operation>: ping, install or uninstall
 	-p, --port: port (default: '443')
+	-a, --alias: alias in keystore (default: '<host>')
 	-h, --help: Prints help
-```
-```
-SSL certificate install into java keystore. (v1.0)
-Usage: sslinstall [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] <host>
-	<host>: without https:// and port, eg. google.com
-	-p, --port: port (default: '443')
-	-a, --alias: alias in keystore (default: <host>
-	-h, --help: Prints help
+	-v, --version: Prints version
 ```
 
 ## Requirements
 
 * `JAVA_HOME` environment
-* `openssl` 
-
-## How to remove
-```
-curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/uninstall.sh | bash
-```
-for windows, use `Git Bash` or bash enabled powershell as system administrator.
+* `openssl`
 
 
-## Credits
-
-Script skeleton generated with https://argbash.io/
