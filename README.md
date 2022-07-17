@@ -6,18 +6,13 @@
 
 # java-ssl-tools (jssl)
 
-Install certificate into java keystore and check SSL handshake easily, like
+A keytool alternative with handshake checking mechanism.  
+Install certificate and check the result like:
 
-```
-$ jssl example.com install
-Certificate was added to keystore
-```
-```
-$ jssl example.com ping
-Successfully connected to Socket[addr=example.com/93.184.216.34,port=443,localport=64233]
-```
+![demo](jssl.gif)
 
-No more PKIX error! :)
+
+
 
 ## How to install
 
@@ -25,9 +20,13 @@ Just run:
 ```
 curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
 ```
-for windows, use `Git Bash` or bash enabled powershell as system administrator.
+on Windows, use `Git Bash` or bash enabled `Powershell` as system administrator.
 
 
+### Requirements
+
+* `JAVA_HOME` environment
+* `openssl`
     
 ## Manual
 ```
@@ -42,9 +41,21 @@ Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] 
 	-v, --version: Prints version
 ```
 
-## Requirements
-
-* `JAVA_HOME` environment
-* `openssl`
-
-
+## Why not just use `keytool`?
+Java has a built-in `keytool` to handle certificates on the java keystore.  
+However it has a few drawbacks:
+### In `keytool` there is no way to check that the certifiacate works 
+With `jssl` just type
+```
+$ jssl <URL> ping
+```
+### With `keytool` you have to write a lot!
+ first you need to get the certificate somehow, then to import it with keytool, thinking about alias names and the default password. Eg.:
+```
+$ echo | openssl s_client -connect "<URL>:443"  2>/dev/null | openssl x509 > certificate.pem
+$ /opt/homebrew/opt/openjdk@11/bin/keytool -importcert -cacerts -noprompt -alias <myalias> -file certificate.pem -keypass changeit -storepass changeit
+```
+is equivalent to 
+```
+$ jssl <URL> install
+```
