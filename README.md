@@ -49,7 +49,7 @@ With `jssl` just type
 ```
 $ jssl <URL> ping
 ```
-### With `keytool` you have to write a lot!
+### With `keytool` you have to type a lot!
  first you need to get the certificate somehow, then to import it with keytool, thinking about alias names and the default password. Eg.:
 ```
 $ echo | openssl s_client -connect "<URL>:443"  2>/dev/null | openssl x509 > certificate.pem
