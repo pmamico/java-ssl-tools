@@ -7,7 +7,7 @@
 # java-ssl-tools (jssl)
 
 A keytool alternative with handshake checking mechanism.  
-Install certificate and check the result like:
+Install certificate and check the connection like:
 
 ![demo](jssl.gif)
 
