@@ -7,8 +7,7 @@
 
 # java-ssl-tools (jssl)
 
-A keytool alternative with handshake checking mechanism.  
-Install certificate and check the connection like:
+Install, ping and uninstall certificates in java keystore.
 
 ![demo](.doc/jssl.gif)
 
