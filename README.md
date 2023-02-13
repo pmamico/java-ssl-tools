@@ -62,3 +62,11 @@ is equivalent to
 ```
 $ jssl <URL> install
 ```
+
+## Supports
+
+| |Java 1.8 | Java 11  |  Java 17   |
+|---|---|---|---|
+| Linux | :heavy_check_mark:  | :heavy_check_mark:  |  :heavy_check_mark:  
+| MacOS  | :heavy_check_mark:  |  :heavy_check_mark: | :heavy_check_mark:  |
+| Windows | :heavy_check_mark:  |  :heavy_check_mark: | :heavy_check_mark:  |
