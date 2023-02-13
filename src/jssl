@@ -1,7 +1,14 @@
 #!/bin/bash
-### java-ssl-tools (jssl) v1.1
-jssl_version="v1.1"
+### java-ssl-tools (jssl) v1.2
+jssl_version="v1.2"
+JVM_VERSION=$(java -version 2>&1 | head -n 1)
 
+
+SUDO="sudo"
+if ! command -v sudo &> /dev/null
+then
+    SUDO=""
+fi
 
 ### To keep the script standalone, source is divided into parts
 
@@ -182,7 +189,7 @@ clean_up_sslping()
 ################
 check_handshake()
 {
-  "$JAVA_HOME/bin/javac" --version
+  "$JAVA_HOME/bin/javac" -version
   print_and_compile_java
   "$JAVA_HOME/bin/java" SSLPing "$_arg_host" "$_arg_port"
   clean_up_sslping
@@ -197,10 +204,23 @@ install_cert()
   if [[ "$_arg_alias" == "<host>" ]]; then
       _arg_alias="$_arg_host"
   fi
-  echo "Installing cert for $(java --version | head -n 1)"
+
+  echo "Installing cert for $JVM_VERSION"
   echo "keytool: $JAVA_HOME/bin/keytool "
   echo | openssl s_client -connect "$_arg_host:$_arg_port"  2>/dev/null | openssl x509 > "$_arg_alias".pem
-  "$JAVA_HOME/bin/keytool" -importcert -cacerts -noprompt -alias "$_arg_alias" -file "$_arg_alias".pem -keypass changeit -storepass changeit
+  if [[ $JVM_VERSION == *"1.8"* ]]; then
+    $SUDO "$JAVA_HOME/bin/keytool" -import \
+    -trustcacerts -noprompt \
+    -alias "$_arg_alias" \
+    -file "$_arg_alias".pem \
+    -keystore $JAVA_HOME/jre/lib/security/cacerts \
+    -keypass changeit \
+    -storepass changeit
+  else
+    "$JAVA_HOME/bin/keytool" -importcert -cacerts -noprompt \
+    -alias "$_arg_alias" -file "$_arg_alias".pem \
+    -keypass changeit -storepass changeit
+  fi
   rm "$_arg_alias".pem
 }
 
@@ -213,9 +233,20 @@ uninstall_cert()
   if [[ "$_arg_alias" == "<host>" ]]; then
       _arg_alias="$_arg_host"
   fi
-  echo "Uninstall cert for $(java --version | head -n 1)"
+  echo "Uninstall cert for $JVM_VERSION"
   echo "keytool: $JAVA_HOME/bin/keytool "
-  "$JAVA_HOME/bin/keytool" -delete -noprompt -cacerts -alias "$_arg_alias" -keypass changeit -storepass changeit && echo "Certificate is removed from java keystore"
+   if [[ $JVM_VERSION == *"1.8"* ]]; then
+     $SUDO "$JAVA_HOME/bin/keytool" -delete \
+     -noprompt -trustcacerts \
+     -alias "$_arg_alias" \
+     -keystore $JAVA_HOME/jre/lib/security/cacerts \
+     -keypass changeit -storepass changeit \
+     && echo "Certificate is removed from java keystore"
+   else
+     "$JAVA_HOME/bin/keytool" -delete -noprompt -cacerts \
+     -alias "$_arg_alias" -keypass changeit -storepass changeit \
+     && echo "Certificate is removed from java keystore"
+   fi
 }
 
 
