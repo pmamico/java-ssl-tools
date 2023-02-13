@@ -209,7 +209,7 @@ install_cert()
   echo "keytool: $JAVA_HOME/bin/keytool "
   echo | openssl s_client -connect "$_arg_host:$_arg_port"  2>/dev/null | openssl x509 > "$_arg_alias".pem
   if [[ $JVM_VERSION == *"1.8"* ]]; then
-    $SUDO "$JAVA_HOME/bin/keytool" -import \
+    "$SUDO" "$JAVA_HOME/bin/keytool" -import \
     -trustcacerts -noprompt \
     -alias "$_arg_alias" \
     -file "$_arg_alias".pem \
@@ -236,7 +236,7 @@ uninstall_cert()
   echo "Uninstall cert for $JVM_VERSION"
   echo "keytool: $JAVA_HOME/bin/keytool "
    if [[ $JVM_VERSION == *"1.8"* ]]; then
-     $SUDO "$JAVA_HOME/bin/keytool" -delete \
+     "$SUDO" "$JAVA_HOME/bin/keytool" -delete \
      -noprompt -trustcacerts \
      -alias "$_arg_alias" \
      -keystore $JAVA_HOME/jre/lib/security/cacerts \

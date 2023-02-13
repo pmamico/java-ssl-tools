@@ -31,7 +31,7 @@ on Windows, use `Git Bash` or bash enabled `Powershell` as system administrator.
     
 ## Manual
 ```
-jssl v1.1
+jssl v1.2
 Install trusted certificate and check SSL handshake against java keystore.
 Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]
 	<host>: without https:// and port, eg. google.com
