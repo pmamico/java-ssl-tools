@@ -213,7 +213,7 @@ install_cert()
     -trustcacerts -noprompt \
     -alias "$_arg_alias" \
     -file "$_arg_alias".pem \
-    -keystore $JAVA_HOME/jre/lib/security/cacerts \
+    -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
     -keypass changeit \
     -storepass changeit
   else
@@ -239,7 +239,7 @@ uninstall_cert()
      "$SUDO" "$JAVA_HOME/bin/keytool" -delete \
      -noprompt -trustcacerts \
      -alias "$_arg_alias" \
-     -keystore $JAVA_HOME/jre/lib/security/cacerts \
+     -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
      -keypass changeit -storepass changeit \
      && echo "Certificate is removed from java keystore"
    else
