@@ -12,18 +12,16 @@ Install, ping and uninstall certificates in java keystore.
 
 ## How to install
 
-Just run: 
+via homebrew:
+```
+brew install pmamico/java/jssl
+```
+or
 ```
 curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
 ```
-on Windows, use `Git Bash` or bash enabled `Powershell` as system administrator.
+on Windows, use `Git Bash` as system administrator.
 
-
-### Requirements
-
-* `JAVA_HOME` environment
-* `openssl`
-    
 ## Manual
 ```
 jssl v1.2
@@ -66,3 +64,8 @@ $ jssl <URL> install
 | Linux | :heavy_check_mark:  | :heavy_check_mark:  |  :heavy_check_mark:  
 | MacOS  | :heavy_check_mark:  |  :heavy_check_mark: | :heavy_check_mark:  |
 | Windows | :heavy_check_mark:  |  :heavy_check_mark: | :heavy_check_mark:  |
+
+## Requirements
+
+* `JAVA_HOME` environment
+* `openssl`
