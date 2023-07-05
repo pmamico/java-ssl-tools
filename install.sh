@@ -11,10 +11,12 @@ elif [ "${uname:0:5}" == "Linux" ]; then
      INSTALL_PATH=/usr/local/bin/jssl
 elif [ "${uname:0:10}" == "MINGW32_NT" ]; then
     # 32 bits Windows NT platform
+    mkdir -p "$HOME"/bin
     curl -o "$HOME"/bin/jssl -s https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/src/jssl
     INSTALL_PATH=$HOME/bin/jssl
 elif [ "${uname:0:10}" == "MINGW64_NT" ]; then
     # 64 bits Windows NT platform
+   mkdir -p "$HOME"/bin
    curl -o "$HOME"/bin/jssl -s https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/src/jssl
    INSTALL_PATH=$HOME/bin/jssl
 fi
