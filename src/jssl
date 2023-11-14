@@ -1,13 +1,13 @@
 #!/bin/bash
-### java-ssl-tools (jssl) v1.2
-jssl_version="v1.2"
+### java-ssl-tools (jssl) v1.3
+jssl_version="v1.3"
 JVM_VERSION=$(java -version 2>&1 | head -n 1)
 
 
-SUDO="sudo"
-if ! command -v sudo &> /dev/null
+SUDO=""
+if command -v sudo &> /dev/null
 then
-    SUDO=""
+    SUDO="sudo"
 fi
 
 ### To keep the script standalone, source is divided into parts
