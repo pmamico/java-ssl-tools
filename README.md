@@ -1,26 +1,25 @@
 ![shellcheck](https://github.com/pmamico/java-ssl-tools/actions/workflows/shellcheck.yml/badge.svg)  
-![Cert](.img/ssl.svg)
+![Cert](https://github.com/pmamico/java-ssl-tools/blob/main/.img/ssl.svg?raw=true)
 
 # java-ssl-tools (jssl)
 
 Install, ping and uninstall certificates in java keystore.
 
-![demo](.doc/jssl.gif)
-
-
+![demo](https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/.doc/jssl.gif)
 
 
 ## How to install
 
-via homebrew:
-```
-brew install pmamico/java/jssl
-```
-or
+
 ```
 curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
 ```
-on Windows, use `Git Bash` as system administrator.
+on Windows, use `Git Bash` as system administrator.  
+or via homebrew:
+```
+brew install pmamico/java/jssl
+```
+
 
 ## Manual
 ```
@@ -59,11 +58,11 @@ $ jssl <URL> install
 
 ## Supports
 
-|         | Java 1.8           | Java 11            | Java 17            |
-|---------|--------------------|--------------------|--------------------|
-| Linux   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| MacOS   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Windows | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|         | Java 1.8           | Java 11            | Java 17            | Java 21            |
+|---------|--------------------|--------------------|--------------------|--------------------|
+| Linux   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| MacOS   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Windows | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Requirements
 
