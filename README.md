@@ -23,13 +23,15 @@ brew install pmamico/java/jssl
 
 ## Manual
 ```
-jssl v1.3
+jssl v1.4
 Install trusted certificate and check SSL handshake against java keystore.
+
 Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]
 	<host>: without https:// and port, eg. google.com
 	<operation>: ping, install or uninstall
 	-p, --port: port (default: '443')
 	-a, --alias: alias in keystore (default: '<host>')
+	-l, --list: List installed certificates with jssl
 	-h, --help: Prints help
 	-v, --version: Prints version
 ```

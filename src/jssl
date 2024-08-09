@@ -1,6 +1,6 @@
 #!/bin/bash
-### java-ssl-tools (jssl) v1.3
-jssl_version="v1.3"
+### java-ssl-tools (jssl) v1.4
+jssl_version="v1.4"
 JVM_VERSION=$(java -version 2>&1 | head -n 1)
 
 
@@ -56,6 +56,7 @@ print_help()
 	printf '\t%s\n' "<operation>: ping, install or uninstall"
 	printf '\t%s\n' "-p, --port: port (default: '443')"
 	printf '\t%s\n' "-a, --alias: alias in keystore (default: '<host>')"
+	printf '\t%s\n' "-l, --list: List installed certificates with jssl"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n\n' "-v, --version: Prints version"
 
@@ -98,29 +99,33 @@ parse_commandline()
 			-p*)
 				_arg_port="${_key##-p}"
 				;;
-      -a|--alias)
-        test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_alias="$2"
-        shift
-        ;;
-      --alias=*)
-        _arg_alias="${_key##--alias=}"
-        ;;
-      -a*)
-        _arg_alias="${_key##-a}"
-    				;;
+			-a|--alias)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_alias="$2"
+				shift
+				;;
+			--alias=*)
+				_arg_alias="${_key##--alias=}"
+				;;
+			-a*)
+				_arg_alias="${_key##-a}"
+				;;
 			-h|--help)
 				print_help
+				exit 0
+				;;
+			-l|--list)
+				list_installed_certs
 				exit 0
 				;;
 			-h*)
 				print_help
 				exit 0
 				;;
-      -v|--version)
-        print_version
-        exit 0
-        ;;
+			-v|--version)
+				print_version
+				exit 0
+				;;
 			*)
 				_last_positional="$1"
 				_positionals+=("$_last_positional")
@@ -135,6 +140,7 @@ parse_commandline()
 ###################################################
 handle_passed_args_count()
 {
+	# shellcheck disable=SC2034
 	local _required_args_string="'host' 'operation'"
 	test "${_positionals_count}" -ge 2 || _PRINT_HELP=yes die "" 1
 	test "${_positionals_count}" -le 2 || _PRINT_HELP=yes die "" 1
@@ -142,10 +148,10 @@ handle_passed_args_count()
 
 assign_positional_args()
 {
-   shift "$1"
-    _arg_host="$1"
-	 shift
-  _arg_operation="$1"
+		shift "$1"
+		_arg_host="$1"
+		shift
+		_arg_operation="$1"
 }
 
 print_and_compile_java()
@@ -205,6 +211,24 @@ check_handshake()
   clean_up_sslping
 }
 
+################
+# Part: list   #
+################
+list_installed_certs()
+{
+		if [[ $JVM_VERSION == *"1.8"* ]]; then
+			"$SUDO" "$JAVA_HOME/bin/keytool" -v \
+			--list \
+			-keystore "$JAVA_HOME"/jre/lib/security/cacerts \
+						| grep -E "Alias name.*jssl" -A 3
+		else
+			"$SUDO" "$JAVA_HOME/bin/keytool" -v \
+			--list \
+			-cacerts \
+			| grep -E "Alias name.*jssl" -A 3
+		fi
+}
+
 
 ###################
 # Part: install   #
@@ -212,7 +236,7 @@ check_handshake()
 install_cert()
 {
   if [[ "$_arg_alias" == "<host>" ]]; then
-      _arg_alias="$_arg_host"
+      _arg_alias="jssl_$_arg_host"
   fi
 
   echo "Installing cert for $JVM_VERSION"
