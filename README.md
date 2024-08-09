@@ -3,6 +3,7 @@
 
 # java-ssl-tools (jssl)
 
+Say goodbye to "PKIX path building failed"!  
 Install, ping and uninstall certificates in java keystore.
 
 ![demo](https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/.doc/jssl.gif)
