@@ -6,7 +6,7 @@ Fix Java SSL issues in seconds – no more `PKIX path building failed`.
 `jssl` lets you **ping**, **install**, and **uninstall** SSL certs directly in your Java keystore – _in one line_.
 
 ✅ No more manual `keytool` troubles   
-✅ Works with any JVM (Java 8–21)  
+✅ Works with any JVM (Java 8–24)  
 ✅ Docker & CI friendly  
 ✅ Autocompletion for Fish & Bash
 
