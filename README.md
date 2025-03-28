@@ -1,22 +1,26 @@
 ![shellcheck](https://github.com/pmamico/java-ssl-tools/actions/workflows/shellcheck.yml/badge.svg)  
 ![Cert](https://github.com/pmamico/java-ssl-tools/blob/main/.img/ssl.svg?raw=true)
 
-# java-ssl-tools (jssl)
+# java-ssl-tools (`jssl`) 🔐
 
-Say goodbye to "PKIX path building failed"!  
-Install, ping and uninstall certificates in java keystore lightning-fast.
+Fix Java SSL issues in seconds – no more `PKIX path building failed`.  
+`jssl` lets you **ping**, **install**, and **uninstall** SSL certs directly in your Java keystore – _in one line_.
+
+✅ No more manual `keytool` troubles   
+✅ Works with any JVM (Java 8–21)  
+✅ Docker & CI friendly  
+✅ Autocompletion for Fish & Bash
 
 ![demo](https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/.doc/jssl.gif)
 
-
-## How to install
-
-
+## 🚀 install
+any terminal:
 ```
 curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
 ```
 on Windows, use `Git Bash` as system administrator.  
-or via homebrew:
+  
+🍺  via homebrew:
 ```
 brew install pmamico/java/jssl
 ```
@@ -24,7 +28,7 @@ brew install pmamico/java/jssl
 
 ## Manual
 ```
-jssl v1.5
+jssl v2.0
 Install trusted certificate and check SSL handshake against java keystore.
 
 Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]
@@ -35,6 +39,67 @@ Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] 
 	-l, --list: List installed certificates with jssl
 	-h, --help: Prints help
 	-v, --version: Prints version
+```
+
+## 🐳 Example: Using jssl in docker
+
+Here’s how you can use jssl inside a Dockerfile to import a certificate into the Java keystore during image build:
+
+### 📦 Dockerfile
+```dockerfile
+FROM eclipse-temurin:17-jdk
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y curl openssl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install jssl
+RUN curl -sL https://raw.githubusercontent.com/pmamico/java-ssl-tools/main/install.sh | bash
+
+# Set JAVA_HOME if not already set by base image
+ENV JAVA_HOME=/opt/java/openjdk
+
+#  Add your cert at build time
+RUN jssl example.com install
+
+# Your application setup
+COPY ./app.jar /app.jar
+CMD ["java", "-jar", "/app.jar"]
+```
+
+### 📦 Docker Compose example (runtime install) 
+If you have `jssl` in your base image, but you want to install the certificate at runtime, you can use the following Docker Compose setup:
+```yaml
+services:
+  app:
+    build: .
+    environment:
+      - JAVA_HOME=/opt/java/openjdk
+    entrypoint: >
+      sh -c "jssl example.xom install &&
+             java -jar /app.jar"
+```
+
+## 🐟 Fish shell autocomplete 
+
+You can install the Fish shell autocomplete by copying `autocomplete/jssl.fish` to `~/.config/fish/completions`:
+```sh
+cp autocomplete/jssl.fish ~/.config/fish/completions/jssl.fish
+source ~/.config/fish/completions/jssl.fish
+```
+
+## 🐚 Bash completion
+
+You can install the Bash completion by copying `autocomplete/jssl` to `/etc/bash_completion.d`:
+
+```sh
+cp autocomplete/jssl /etc/bash_completion.d/jssl
+source /etc/bash_completion.d/jssl
+```
+
+```dockerfile
+
 ```
 
 ## Why not just use `keytool`?

@@ -1,16 +1,24 @@
 #!/bin/bash
-### java-ssl-tools (jssl) v1.5
-jssl_version="v1.5"
+### java-ssl-tools (jssl) v2.0
+jssl_version="v2.0"
 JVM_VERSION=$(java -version 2>&1 | head -n 1)
 
-
-SUDO=""
-if command -v sudo &> /dev/null
-then
-    SUDO="sudo"
-fi
-
-### To keep the script standalone, source is divided into parts
+###############################
+### Part: UX ###
+###############################
+set_colors() {
+  if command -v tput &>/dev/null && [ -t 1 ]; then
+    RED=$(tput setaf 1)
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    BLUE=$(tput setaf 4)
+    BOLD=$(tput bold)
+    RESET=$(tput sgr0)
+  else
+    RED=""; GREEN=""; YELLOW=""; BLUE=""; BOLD=""; RESET=""
+  fi
+}
+set_colors
 
 ###############################
 ### Part: argbash generated ###
@@ -19,10 +27,9 @@ die()
 {
 	local _ret="${2:-1}"
 	test "${_PRINT_HELP:-no}" = yes && print_help >&2
-	echo "$1" >&2
+	echo "${RED}✖ $1${RESET}" >&2
 	exit "${_ret}"
 }
-
 
 begins_with_short_option()
 {
@@ -36,12 +43,9 @@ begins_with_short_option()
 #################################
 
 _positionals=()
-# THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_port="443"
 _arg_alias="<host>"
 _arg_operation="ping"
-# Function that prints general usage of the script.
-
 
 #############################
 # Part: options without arg #
@@ -49,9 +53,9 @@ _arg_operation="ping"
 
 print_help()
 {
-  printf '%s\n' "jssl $jssl_version"
+  printf '%s\n' "${BOLD}jssl $jssl_version${RESET}"
 	printf '%s\n\n' "Install trusted certificate and check SSL handshake against java keystore."
-	printf 'Usage: jssl <host> <operation> [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version] \n'
+	printf 'Usage: ${BOLD}jssl <host> <operation>${RESET} [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version] \n'
 	printf '\t%s\n' "<host>: without https:// and port, eg. google.com"
 	printf '\t%s\n' "<operation>: ping, install or uninstall"
 	printf '\t%s\n' "-p, --port: port (default: '443')"
@@ -60,23 +64,21 @@ print_help()
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n\n' "-v, --version: Prints version"
 
-	printf '%s\n' "Examples: "
+	printf '%s\n' "${BOLD}Examples:${RESET}"
 	printf '%s\n' "jssl example.com install"
 	printf '%s\n\n' "jssl example.com ping"
 
-	printf '%s\n' "Current java: "
+	printf '%s\n' "Current java:"
 	echo "$JVM_VERSION"
 	echo "JAVA_HOME=$JAVA_HOME"
 }
 
-### --version, -v
 print_version()
 {
 	echo "jssl $jssl_version"
 	echo "$JVM_VERSION"
 	echo "JAVA_HOME $JAVA_HOME"
 }
-
 
 #############################
 # Part: argbash parsing     #
@@ -89,7 +91,7 @@ parse_commandline()
 		_key="$1"
 		case "$_key" in
 			-p|--port)
-				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'."
 				_arg_port="$2"
 				shift
 				;;
@@ -100,7 +102,7 @@ parse_commandline()
 				_arg_port="${_key##-p}"
 				;;
 			-a|--alias)
-				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'."
 				_arg_alias="$2"
 				shift
 				;;
@@ -135,15 +137,12 @@ parse_commandline()
 		shift
 	done
 }
-###################################################
-# Part: handle and assign of args and positionals #
-###################################################
+
 handle_passed_args_count()
 {
-	# shellcheck disable=SC2034
 	local _required_args_string="'host' 'operation'"
-	test "${_positionals_count}" -ge 2 || _PRINT_HELP=yes die "" 1
-	test "${_positionals_count}" -le 2 || _PRINT_HELP=yes die "" 1
+	test "${_positionals_count}" -ge 2 || _PRINT_HELP=yes die "Missing required arguments: $_required_args_string"
+	test "${_positionals_count}" -le 2 || _PRINT_HELP=yes die "Too many arguments provided"
 }
 
 assign_positional_args()
@@ -183,7 +182,6 @@ public class SSLPing {
 			while (in.available() > 0) {
 				System.out.print(in.read());
 			}
-			System.out.println("Successfully connected to "+sslsocket);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(1);
@@ -196,8 +194,7 @@ EOM
 
 clean_up_sslping()
 {
-	rm SSLPing.java
-	rm SSLPing.class
+	rm -f SSLPing.java SSLPing.class
 }
 
 ################
@@ -205,9 +202,15 @@ clean_up_sslping()
 ################
 check_handshake()
 {
+  echo "${BLUE}Checking SSL handshake...${RESET}"
   "$JAVA_HOME/bin/javac" -version
   print_and_compile_java
   "$JAVA_HOME/bin/java" SSLPing "$_arg_host" "$_arg_port"
+  if [[ $? -eq 0 ]]; then
+    echo "${GREEN}✔ SSL handshake successful with $_arg_host:${_arg_port}${RESET}"
+  else
+    echo "${RED}✖ SSL handshake failed with $_arg_host:${_arg_port}${RESET}"
+  fi
   clean_up_sslping
 }
 
@@ -216,19 +219,19 @@ check_handshake()
 ################
 list_installed_certs()
 {
-		if [[ $JVM_VERSION == *"1.8"* ]]; then
-			"$SUDO" "$JAVA_HOME/bin/keytool" -v \
-			--list \
-			-keystore "$JAVA_HOME"/jre/lib/security/cacerts \
-						| grep -E "Alias name.*jssl" -A 3
-		else
-			"$SUDO" "$JAVA_HOME/bin/keytool" -v \
-			--list \
-			-cacerts \
-			| grep -E "Alias name.*jssl" -A 3
-		fi
+  echo "${BLUE}Listing installed jssl certificates in keystore...${RESET}"
+  if [[ $JVM_VERSION == *"1.8"* ]]; then
+    "$JAVA_HOME/bin/keytool" -v --list \
+      -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
+      -storepass changeit \
+      | grep -E "Alias name.*jssl" -A 3
+  else
+    "$JAVA_HOME/bin/keytool" -v --list \
+      -cacerts \
+      -storepass changeit \
+      | grep -E "Alias name.*jssl" -A 3
+  fi
 }
-
 
 ###################
 # Part: install   #
@@ -236,28 +239,41 @@ list_installed_certs()
 install_cert()
 {
   if [[ "$_arg_alias" == "<host>" ]]; then
-      _arg_alias="jssl_$_arg_host"
+    _arg_alias="jssl_$_arg_host"
   fi
 
-  echo "Installing cert for $JVM_VERSION"
-  echo "keytool: $JAVA_HOME/bin/keytool "
-  echo | openssl s_client -connect "$_arg_host:$_arg_port"  2>/dev/null | openssl x509 > "$_arg_alias".pem
+  echo "${BLUE}Installing cert for $JVM_VERSION${RESET}"
+  echo "keytool: ${YELLOW}$JAVA_HOME/bin/keytool${RESET}"
+
+  echo | openssl s_client -connect "$_arg_host:$_arg_port" 2>/dev/null | openssl x509 > "$_arg_alias".pem
+  if [[ $? -ne 0 ]]; then
+    echo "${RED}✖ Failed to fetch certificate from $_arg_host:$_arg_port${RESET}"
+    rm -f "$_arg_alias".pem
+    exit 1
+  fi
+
   if [[ $JVM_VERSION == *"1.8"* ]]; then
     "$JAVA_HOME/bin/keytool" -import \
-    -trustcacerts -noprompt \
-    -alias "$_arg_alias" \
-    -file "$_arg_alias".pem \
-    -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
-    -keypass changeit \
-    -storepass changeit
+      -trustcacerts -noprompt \
+      -alias "$_arg_alias" \
+      -file "$_arg_alias".pem \
+      -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
+      -keypass changeit -storepass changeit
   else
     "$JAVA_HOME/bin/keytool" -importcert -cacerts -noprompt \
-    -alias "$_arg_alias" -file "$_arg_alias".pem \
-    -keypass changeit -storepass changeit
+      -alias "$_arg_alias" \
+      -file "$_arg_alias".pem \
+      -keypass changeit -storepass changeit
   fi
-  rm "$_arg_alias".pem
-}
 
+  if [[ $? -eq 0 ]]; then
+    echo "${GREEN}✔ Certificate installed successfully${RESET}"
+  else
+    echo "${RED}✖ Failed to install certificate into Java keystore${RESET}"
+  fi
+
+  rm -f "$_arg_alias".pem
+}
 
 ###################
 # Part: uninstall #
@@ -265,46 +281,43 @@ install_cert()
 uninstall_cert()
 {
   if [[ "$_arg_alias" == "<host>" ]]; then
-      _arg_alias="$_arg_host"
+    _arg_alias="$_arg_host"
   fi
-  echo "Uninstall cert for $JVM_VERSION"
-  echo "keytool: $JAVA_HOME/bin/keytool "
-   if [[ $JVM_VERSION == *"1.8"* ]]; then
-     "$SUDO" "$JAVA_HOME/bin/keytool" -delete \
-     -noprompt -trustcacerts \
-     -alias "$_arg_alias" \
-     -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
-     -keypass changeit -storepass changeit \
-     && echo "Certificate is removed from java keystore"
-   else
-     "$JAVA_HOME/bin/keytool" -delete -noprompt -cacerts \
-     -alias "$_arg_alias" -keypass changeit -storepass changeit \
-     && echo "Certificate is removed from java keystore"
-   fi
+
+  echo "${BLUE}Uninstalling certificate: jssl_$_arg_alias${RESET}"
+  echo "keytool: ${YELLOW}$JAVA_HOME/bin/keytool${RESET}"
+
+  if [[ $JVM_VERSION == *"1.8"* ]]; then
+    "$JAVA_HOME/bin/keytool" -delete \
+      -noprompt -trustcacerts \
+      -alias "jssl_$_arg_alias" \
+      -keystore "$JAVA_HOME"/jre/lib/security/cacerts \
+      -keypass changeit -storepass changeit \
+      && echo "${GREEN}✔ Certificate removed from Java keystore${RESET}" \
+      || echo "${RED}✖ Failed to remove certificate${RESET}"
+  else
+    "$JAVA_HOME/bin/keytool" -delete -noprompt -cacerts \
+      -alias "jssl_$_arg_alias" \
+      -keypass changeit -storepass changeit \
+      && echo "${GREEN}✔ Certificate removed from Java keystore${RESET}" \
+      || echo "${RED}✖ Failed to remove certificate${RESET}"
+  fi
 }
 
-
 ################################################
-################################################
-############### Part: "Main" ###################
-################################################
+##################### Main #####################
 ################################################
 
 parse_commandline "$@"
 handle_passed_args_count
 assign_positional_args 1 "${_positionals[@]}"
 
-
-if [ "$_arg_operation" == "ping" ]
-then
+if [ "$_arg_operation" == "ping" ]; then
   check_handshake
-elif [ "$_arg_operation" == "install" ]
-then
+elif [ "$_arg_operation" == "install" ]; then
   install_cert
-elif [ "$_arg_operation" == "uninstall" ]
-then
-    uninstall_cert
+elif [ "$_arg_operation" == "uninstall" ]; then
+  uninstall_cert
 else
-   die "Unknown operation: $_arg_operation! Valid operations: ping, install, uninstall"
+  die "Unknown operation: $_arg_operation! Valid operations: ping, install, uninstall"
 fi
-
