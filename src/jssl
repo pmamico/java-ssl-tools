@@ -1,6 +1,6 @@
 #!/bin/bash
-### java-ssl-tools (jssl) v1.4
-jssl_version="v1.4"
+### java-ssl-tools (jssl) v1.5
+jssl_version="v1.5"
 JVM_VERSION=$(java -version 2>&1 | head -n 1)
 
 
@@ -243,7 +243,7 @@ install_cert()
   echo "keytool: $JAVA_HOME/bin/keytool "
   echo | openssl s_client -connect "$_arg_host:$_arg_port"  2>/dev/null | openssl x509 > "$_arg_alias".pem
   if [[ $JVM_VERSION == *"1.8"* ]]; then
-    "$SUDO" "$JAVA_HOME/bin/keytool" -import \
+    "$JAVA_HOME/bin/keytool" -import \
     -trustcacerts -noprompt \
     -alias "$_arg_alias" \
     -file "$_arg_alias".pem \
