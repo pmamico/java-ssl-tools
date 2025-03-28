@@ -55,6 +55,7 @@ print_help()
 {
   printf '%s\n' "${BOLD}jssl $jssl_version${RESET}"
 	printf '%s\n\n' "Install trusted certificate and check SSL handshake against java keystore."
+	# shellcheck disable=SC2059
 	printf "Usage: ${BOLD}jssl <host> <operation>${RESET} [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]\n"
 	printf '\t%s\n' "<host>: without https:// and port, eg. google.com"
 	printf '\t%s\n' "<operation>: ping, install or uninstall"
@@ -206,6 +207,7 @@ check_handshake()
   "$JAVA_HOME/bin/javac" -version
   print_and_compile_java
   "$JAVA_HOME/bin/java" SSLPing "$_arg_host" "$_arg_port"
+  # shellcheck disable=SC2181
   if [[ $? -eq 0 ]]; then
     echo "${GREEN}✔ SSL handshake successful with $_arg_host:${_arg_port}${RESET}"
   else
@@ -246,6 +248,7 @@ install_cert()
   echo "keytool: ${YELLOW}$JAVA_HOME/bin/keytool${RESET}"
 
   echo | openssl s_client -connect "$_arg_host:$_arg_port" 2>/dev/null | openssl x509 > "$_arg_alias".pem
+  # shellcheck disable=SC2181
   if [[ $? -ne 0 ]]; then
     echo "${RED}✖ Failed to fetch certificate from $_arg_host:$_arg_port${RESET}"
     rm -f "$_arg_alias".pem
@@ -266,6 +269,7 @@ install_cert()
       -keypass changeit -storepass changeit
   fi
 
+  # shellcheck disable=SC2181
   if [[ $? -eq 0 ]]; then
     echo "${GREEN}✔ Certificate installed successfully${RESET}"
   else
