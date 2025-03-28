@@ -55,7 +55,7 @@ print_help()
 {
   printf '%s\n' "${BOLD}jssl $jssl_version${RESET}"
 	printf '%s\n\n' "Install trusted certificate and check SSL handshake against java keystore."
-	printf 'Usage: ${BOLD}jssl <host> <operation>${RESET} [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version] \n'
+	printf "Usage: ${BOLD}jssl <host> <operation>${RESET} [-p|--port <arg>] [-a|--alias <arg>] [-h|--help] [-v|--version]\n"
 	printf '\t%s\n' "<host>: without https:// and port, eg. google.com"
 	printf '\t%s\n' "<operation>: ping, install or uninstall"
 	printf '\t%s\n' "-p, --port: port (default: '443')"
