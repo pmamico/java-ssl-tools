@@ -1,5 +1,4 @@
 ![shellcheck](https://github.com/pmamico/java-ssl-tools/actions/workflows/shellcheck.yml/badge.svg)  
-![Cert](https://github.com/pmamico/java-ssl-tools/blob/main/.img/ssl.svg?raw=true)
 
 # java-ssl-tools (`jssl`) 🔐
 
